@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع شحن الألعاب</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>موقع شحن الألعاب</h1>
+        <p>اشحن رصيدك الآن لألعابك المفضلة مثل ببجي وجينشن.</p>
+    </header>
+
+    <main>
+        <section class="game-section">
+            <h2>اختر اللعبة:</h2>
+            <select id="gameSelect">
+                <option value="pubg">ببجي</option>
+                <option value="genshin">جينشن</option>
+            </select>
+        </section>
+
+        <section class="server-section">
+            <h2>اختر السيرفر:</h2>
+            <select id="serverSelect">
+                <option value="europe">سيرفر أوروبا</option>
+                <option value="america">سيرفر أمريكا</option>
+            </select>
+        </section>
+
+        <section class="amount-section">
+            <h2>أدخل المبلغ:</h2>
+            <input type="number" id="amount" placeholder="أدخل المبلغ بالعملة المحلية">
+        </section>
+
+        <section class="message-section">
+            <h2>أدخل رسالة تحويل الرصيد:</h2>
+            <textarea id="message" placeholder="اكتب رسالتك هنا"></textarea>
+        </section>
+
+        <button id="submitButton">إتمام الشحن</button>
+
+        <div id="result"></div>
+    </main>
+
+    <footer>
+        <p>© 2024 موقع شحن الألعاب. جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
