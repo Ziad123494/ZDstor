@@ -1,53 +1,180 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>موقع شحن الألعاب</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>شحن الألعاب</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      background-color: #f2f2f2;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      font-size: 1.1em;
+      color: #333;
+    }
+    select, input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .price-box {
+      background-color: #f0f0f0;
+      padding: 10px;
+      margin-top: 10px;
+      text-align: center;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #333;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 1.1em;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    .info-message {
+      margin-top: 20px;
+      background-color: #e7f3e7;
+      padding: 10px;
+      border-left: 5px solid #28a745;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>موقع شحن الألعاب</h1>
-        <p>اشحن رصيدك الآن لألعابك المفضلة مثل ببجي وجينشن.</p>
-    </header>
+  <div class="container">
+    <h1>شحن الألعاب</h1>
 
-    <main>
-        <section class="game-section">
-            <h2>اختر اللعبة:</h2>
-            <select id="gameSelect">
-                <option value="pubg">ببجي</option>
-                <option value="genshin">جينشن</option>
-            </select>
-        </section>
+    <!-- خانة الألعاب (ببجي و غينشن) -->
+    <div class="form-group">
+      <label for="game">اختر اللعبة:</label>
+      <select id="game" name="game" onchange="updateOptions()">
+        <option value="pubg">ببجي</option>
+        <option value="genshin">غينشن</option>
+      </select>
+    </div>
 
-        <section class="server-section">
-            <h2>اختر السيرفر:</h2>
-            <select id="serverSelect">
-                <option value="europe">سيرفر أوروبا</option>
-                <option value="america">سيرفر أمريكا</option>
-            </select>
-        </section>
+    <!-- خانة اختيار الكمية (شدات ببجي، كريستال أو ويلكن مون في غينشن) -->
+    <div class="form-group" id="amount-container">
+      <label for="amount">اختر الكمية:</label>
+      <select id="amount" name="amount">
+        <option value="100">100 شدة ببجي</option>
+        <option value="200">200 شدة ببجي</option>
+        <option value="300">300 شدة ببجي</option>
+        <option value="500">500 شدة ببجي</option>
+        <option value="50">50 كريستال غينشن</option>
+        <option value="100">100 كريستال غينشن</option>
+        <option value="150">150 ويلكن مون غينشن</option>
+      </select>
+    </div>
 
-        <section class="amount-section">
-            <h2>ادخلID:</h2>
-            <input type="number" id="amount" placeholder="أدخل المبلغ بالعملة المحلية">
-        </section>
+    <!-- خانة الأسعار -->
+    <div class="price-box" id="price-box">
+      <label>السعر: </label>
+      <span id="price">0</span> دينار ليبي
+    </div>
 
-        <section class="message-section">
-            <h2>أدخل رسالة تحويل الرصيد:</h2>
-            <textarea id="message" placeholder="اكتب رسالتك هنا"></textarea>
-        </section>
+    <!-- خانة الرسالة -->
+    <div class="form-group">
+      <label for="message">قم بنسخ رسالة تحويل الرصيد ومعلوماتك:</label>
+      <textarea id="message" rows="4" readonly>لقد قمت بتحويل رصيد بقيمة [المبلغ] إلى حساب [اسمك].</textarea>
+    </div>
 
-        <button id="submitButton">إتمام الشحن</button>
+    <!-- زر الدفع الآن -->
+    <button onclick="redirectToWhatsApp()">دفع الآن</button>
 
-        <div id="result"></div>
-    </main>
+    <!-- معلومات إضافية -->
+    <div class="info-message">
+      <p>بعد الضغط على "دفع الآن"، سيتم توجيهك إلى واتس اب الخاص بالبائع وسوف يتم شحن رصيدك بسرعة.</p>
+    </div>
+  </div>
 
-    <footer>
-        <p>© 2024 موقع شحن الألعاب. جميع الحقوق محفوظة.</p>
-    </footer>
+  <script>
+    // تحديث الخيارات والأسعار بناءً على اللعبة المختارة
+    function updateOptions() {
+      const game = document.getElementById("game").value;
+      const amountSelect = document.getElementById("amount");
+      const priceBox = document.getElementById("price-box");
+      let options = [];
+      let price = 0;
 
-    <script src="script.js"></script>
+      if (game === "pubg") {
+        // تحديث الخيارات لشدات ببجي
+        options = [
+          { value: "100", text: "100 شدة ببجي" },
+          { value: "200", text: "200 شدة ببجي" },
+          { value: "300", text: "300 شدة ببجي" },
+          { value: "500", text: "500 شدة ببجي" }
+        ];
+        // تحديث الأسعار
+        price = 5; // السعر لكل 100 شدة
+      } else if (game === "genshin") {
+        // تحديث الخيارات لكريستال أو ويلكن مون في غينشن
+        options = [
+          { value: "50", text: "50 كريستال غينشن" },
+          { value: "100", text: "100 كريستال غينشن" },
+          { value: "150", text: "150 ويلكن مون غينشن" }
+        ];
+        // تحديث الأسعار
+        price = 10; // السعر لكل 50 كريستال
+      }
+
+      // تحديث قائمة الكميات
+      amountSelect.innerHTML = "";
+      options.forEach(option => {
+        let opt = document.createElement("option");
+        opt.value = option.value;
+        opt.text = option.text;
+        amountSelect.appendChild(opt);
+      });
+
+      // تحديث السعر
+      const selectedAmount = amountSelect.value;
+      const totalPrice = price * selectedAmount / 100;
+      document.getElementById("price").textContent = totalPrice.toFixed(2);
+    }
+
+    // تحويل المبلغ عند الضغط على "دفع الآن" وتحويل العميل إلى WhatsApp
+    function redirectToWhatsApp() {
+      const amount = document.getElementById("amount").value;
+      const price = document.getElementById("price").textContent;
+      const game = document.getElementById("game").value;
+      const message = encodeURIComponent(`لقد قمت بتحويل رصيد بقيمة ${price} دينار ليبي لشراء ${amount} من ${game}.`);
+      const phoneNumber = "+218946846740";
+      const url = `https://wa.me/${phoneNumber}?text=${message}`;
+
+      window.location.href = url; // توجيه العميل إلى WhatsApp
+    }
+
+    // تفعيل الدالة عند تحميل الصفحة لأول مرة
+    window.onload = updateOptions;
+  </script>
 </body>
 </html>
